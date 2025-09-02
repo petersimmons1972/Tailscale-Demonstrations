@@ -1,0 +1,38 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+*.tfvars.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Kubernetes secrets (never commit real secrets)
+**/oauth-secret.yaml
+**/tailscale-auth-secret.yaml
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.backup
+
+# Personal/sensitive files
+setup_aws_sso.sh
+*.iam_*.tf
