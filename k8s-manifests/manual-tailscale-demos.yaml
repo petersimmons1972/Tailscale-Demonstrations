@@ -10,7 +10,7 @@ metadata:
   name: tailscale-auth
   namespace: tailscale
 stringData:
-  authkey: "tskey-auth-kzuHCBRkUY11CNTRL-o9vEgX1wk9fTGbGTEUNRAfLKE4sbDmz8"
+  authkey: "YOUR_TAILSCALE_AUTH_KEY_HERE"
 ---
 # API Server Proxy - Exposes Kubernetes API through Tailscale
 apiVersion: apps/v1

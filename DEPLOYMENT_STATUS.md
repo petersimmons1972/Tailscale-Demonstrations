@@ -1,6 +1,6 @@
 # Tailscale Kubernetes Deployment Status
 
-## Current Status: ✅ DEPLOYED AND OPERATIONAL (OAuth Method)
+## Current Status: 🗑️ INFRASTRUCTURE DESTROYED (Ready for Redeployment)
 
 ### Cluster Information
 - **Cluster Type**: AWS EKS
@@ -64,26 +64,31 @@
 - **Gitignored Credentials**: .env file excluded from version control
 - **Production Ready**: Follows Tailscale security best practices
 
-### Next Steps
-- All Tailscale use-cases successfully deployed with OAuth
-- Cluster ready for production workloads
-- No manual auth key management required
-- Monitor devices via Tailscale admin consoles
+### Deployment History
+- **✅ Successfully deployed**: Complete Tailscale Kubernetes integration with OAuth
+- **✅ Security fixed**: Removed hardcoded auth keys from YAML manifests
+- **✅ OAuth implemented**: Secure credential management via .env file
+- **✅ Infrastructure destroyed**: All AWS resources cleaned up (no ongoing costs)
 
-1. Verify devices appear in Tailscale admin panel
-2. Test connectivity from Tailscale devices
-3. Optional: Enable subnet routes in Tailscale admin panel
-4. Optional: Test API access through Tailscale network
-
-## 🔍 Verification
-
-### Cluster Status
+### Quick Redeploy Commands
 ```bash
-kubectl get nodes
-# 2 nodes Ready
+# Deploy entire stack
+terraform apply -auto-approve && \
+aws eks update-kubeconfig --region us-east-1 --name tailscale-demo-cluster && \
+./scripts/deploy-oauth.sh && \
+kubectl apply -f k8s-manifests/test-services.yaml
 
-kubectl get pods -n tailscale
-# All pods Running except subnet-router (minor config issue)
+# Teardown entire stack
+kubectl delete -f k8s-manifests/test-services.yaml && \
+helm uninstall tailscale-operator -n tailscale && \
+kubectl delete namespace tailscale && \
+terraform destroy -auto-approve
+```
+
+### Repository Status
+- **OAuth Credentials**: Stored securely in .env file (gitignored)
+- **No Hardcoded Secrets**: All YAML manifests use templates/placeholders
+- **Ready for Deployment**: Complete automation scripts available
 ```
 
 ### Tailscale Devices
