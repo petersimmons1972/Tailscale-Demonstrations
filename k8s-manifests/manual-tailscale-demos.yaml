@@ -10,7 +10,7 @@ metadata:
   name: tailscale-auth
   namespace: tailscale
 stringData:
-  authkey: "YOUR_TAILSCALE_AUTH_KEY_HERE"
+  authkey: "tskey-auth-kzuHCBRkUY11CNTRL-o9vEgX1wk9fTGbGTEUNRAfLKE4sbDmz8"
 ---
 # API Server Proxy - Exposes Kubernetes API through Tailscale
 apiVersion: apps/v1
@@ -44,6 +44,14 @@ spec:
           value: "10.100.0.1/32"
         - name: TS_EXTRA_ARGS
           value: "--accept-routes"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         securityContext:
           capabilities:
             add:
@@ -99,6 +107,14 @@ spec:
           value: "k8s-egress"
         - name: TS_EXTRA_ARGS
           value: "--accept-routes"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         securityContext:
           capabilities:
             add:
@@ -140,7 +156,15 @@ spec:
         - name: TS_HOSTNAME
           value: "k8s-subnet-router"
         - name: TS_EXTRA_ARGS
-          value: "--advertise-routes=10.100.0.0/16 --reset"
+          value: "--advertise-routes=10.0.0.0/16"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         securityContext:
           capabilities:
             add:
@@ -205,6 +229,14 @@ spec:
           value: "k8s-ingress"
         - name: TS_EXTRA_ARGS
           value: "--accept-routes"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         securityContext:
           capabilities:
             add:

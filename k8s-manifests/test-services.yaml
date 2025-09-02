@@ -1,0 +1,109 @@
+# Test Services for Tailscale Operator
+# These demonstrate the 4 main use-cases using the operator approach
+
+---
+# Test Application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-app
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        configMap:
+          name: test-app-html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-app-html
+  namespace: default
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Tailscale Test App</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+            .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            h1 { color: #333; }
+            .status { background: #e8f5e8; padding: 15px; border-radius: 4px; margin: 20px 0; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🎉 Tailscale Kubernetes Test App</h1>
+            <div class="status">
+                <strong>Status:</strong> Running on AWS EKS with Tailscale Operator
+            </div>
+            <p><strong>Cluster:</strong> tailscale-demo-cluster</p>
+            <p><strong>Namespace:</strong> default</p>
+            <p><strong>Access Method:</strong> Tailscale Ingress</p>
+            <p>This application demonstrates secure access to Kubernetes services via Tailscale network.</p>
+        </div>
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-app-service
+  namespace: default
+spec:
+  selector:
+    app: test-app
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# Tailscale Ingress - Exposes the test app via Tailscale
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-app-ingress
+  namespace: default
+  annotations:
+    tailscale.com/hostname: "k8s-test-app"
+spec:
+  ingressClassName: tailscale
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: test-app-service
+            port:
+              number: 80
+---
+# Subnet Router - Advertise cluster networks
+apiVersion: tailscale.com/v1alpha1
+kind: Connector
+metadata:
+  name: subnet-router
+  namespace: tailscale
+spec:
+  hostname: k8s-subnet-router
+  subnetRouter:
+    advertiseRoutes:
+    - "10.0.0.0/16"  # EKS pod network
