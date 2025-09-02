@@ -1,10 +1,11 @@
 # Tailscale EKS Infrastructure Demo
 
 ## Overview
-This project demonstrates a complete Infrastructure as Code solution for deploying Tailscale on AWS EKS. It provisions an EKS cluster and implements three Tailscale operator use-cases:
+This project demonstrates a complete Infrastructure as Code solution for deploying Tailscale on AWS EKS. It provisions an EKS cluster and implements all four Tailscale Kubernetes use-cases:
 
 - **🌐 API Server Proxy** - Secure access to Kubernetes API through Tailscale
-- **🚀 Egress Proxy** - Route application traffic through Tailscale 
+- **📤 Cluster Egress** - Route application traffic through Tailscale network
+- **📥 Cluster Ingress** - Expose cluster services to Tailscale network
 - **🔗 Subnet Router** - Expose pod and service networks via Tailscale
 
 ## 🏗️ Architecture
@@ -30,27 +31,43 @@ This project demonstrates a complete Infrastructure as Code solution for deployi
                     ┌─────────────────────────┐
                     │    Tailscale Network    │
                     │                         │
-                    │  • API Server Proxy     │
-                    │  • Egress Proxy         │
-                    │  • Subnet Router        │
+                    │  🌐 API Server Proxy    │
+                    │  📤 Cluster Egress      │
+                    │  📥 Cluster Ingress     │
+                    │  🔗 Subnet Router       │
                     └─────────────────────────┘
+                                │
+                    ┌───────────────────────────┐
+                    │     External Access       │
+                    │                           │
+                    │  k8s-api-proxy.ts.net     │
+                    │  k8s-egress.ts.net        │
+                    │  k8s-ingress.ts.net       │
+                    │  k8s-subnet-router.ts.net │
+                    └───────────────────────────┘
 ```
 
 ## 📁 Project Structure
 
 ```
 tailscale/
-├── eks-cluster.tf              # EKS cluster infrastructure
-├── eks-variables.tf            # Terraform variables
-├── eks-outputs.tf              # Terraform outputs
-├── versions.tf                 # Provider versions
+├── eks-cluster.tf                      # EKS cluster infrastructure
+├── eks-variables.tf                    # Terraform variables
+├── eks-outputs.tf                      # Terraform outputs
+├── versions.tf                         # Provider versions
 ├── k8s-manifests/
-│   ├── tailscale-operator.yaml     # Tailscale operator deployment
-│   ├── tailscale-usecases.yaml     # Use case implementations
-│   └── oauth-secret-template.yaml  # OAuth credentials template
+│   ├── manual-tailscale-demos.yaml    # All 4 Tailscale use-cases
+│   ├── tailscale-rbac.yaml            # RBAC permissions
+│   └── oauth-secret-template.yaml     # OAuth credentials template
 ├── scripts/
-│   └── deploy.sh               # Automated deployment script
-└── README.md                   # This file
+│   ├── deploy.sh                       # Automated deployment
+│   ├── cleanup.sh                      # Cleanup automation
+│   ├── test-tailscale.sh              # Use-case testing
+│   ├── validate-connectivity.sh       # External connectivity tests
+│   └── demo-use-cases.sh              # Interactive demonstrations
+├── SETUP.md                            # Tailscale setup guide
+├── DEPLOYMENT_STATUS.md                # Current deployment status
+└── README.md                           # This file
 ```
 
 ## 🚀 Quick Start
@@ -108,15 +125,20 @@ curl http://k8s-test-app.your-tailnet.ts.net
 ### 1. API Server Proxy
 Exposes the Kubernetes API server through Tailscale, allowing secure remote access to your cluster without VPN.
 
-**Access:** `k8s-api-proxy.your-tailnet.ts.net`
+**Access:** `k8s-api-proxy.your-tailnet.ts.net:6443`
 
-### 2. Egress Proxy  
+### 2. Cluster Egress  
 Routes application traffic through Tailscale network, useful for accessing internal services or implementing zero-trust networking.
 
 **Access:** `k8s-egress.your-tailnet.ts.net`
 
-### 3. Subnet Router
-Exposes the entire pod and service network (10.100.0.0/16, 10.96.0.0/12) through Tailscale, enabling direct access to any pod or service.
+### 3. Cluster Ingress
+Exposes cluster services to the Tailscale network, allowing external access to internal applications via Tailscale.
+
+**Access:** `k8s-ingress.your-tailnet.ts.net`
+
+### 4. Subnet Router
+Exposes the entire pod and service network (10.100.0.0/16) through Tailscale, enabling direct access to any pod or service.
 
 **Access:** Direct IP access to pods/services via Tailscale
 

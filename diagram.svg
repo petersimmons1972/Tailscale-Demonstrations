@@ -1,24 +1,84 @@
-<svg width="600" height="350" xmlns="http://www.w3.org/2000/svg">
-  <rect width="600" height="350" fill="#f8fafc"/>
-  <rect x="30" y="40" width="180" height="70" fill="#c7d2fe" stroke="#6366f1" stroke-width="2" rx="10"/>
-  <text x="120" y="80" font-size="16" text-anchor="middle" fill="#1e293b">AWS EKS Cluster</text>
-  <rect x="260" y="40" width="180" height="70" fill="#a7f3d0" stroke="#059669" stroke-width="2" rx="10"/>
-  <text x="350" y="80" font-size="16" text-anchor="middle" fill="#064e3b">Kubernetes Nodes</text>
-  <rect x="30" y="170" width="180" height="70" fill="#fef3c7" stroke="#f59e42" stroke-width="2" rx="10"/>
-  <text x="120" y="210" font-size="16" text-anchor="middle" fill="#92400e">Tailscale Operator</text>
-  <rect x="260" y="170" width="180" height="70" fill="#fca5a5" stroke="#dc2626" stroke-width="2" rx="10"/>
-  <text x="350" y="210" font-size="16" text-anchor="middle" fill="#7f1d1d">API Server Proxy</text>
-  <rect x="470" y="170" width="100" height="70" fill="#f9fafb" stroke="#6b7280" stroke-width="2" rx="10"/>
-  <text x="520" y="210" font-size="14" text-anchor="middle" fill="#374151">Subnet Router</text>
-  <rect x="470" y="40" width="100" height="70" fill="#f1f5f9" stroke="#0ea5e9" stroke-width="2" rx="10"/>
-  <text x="520" y="80" font-size="14" text-anchor="middle" fill="#0369a1">Tailnet</text>
-  <line x1="120" y1="110" x2="120" y2="170" stroke="#6366f1" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="350" y1="110" x2="350" y2="170" stroke="#059669" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="350" y1="240" x2="520" y2="240" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="520" y1="110" x2="520" y2="170" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+<svg width="700" height="450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="700" height="450" fill="#f8fafc"/>
+  
+  <!-- Title -->
+  <text x="350" y="25" font-size="18" font-weight="bold" text-anchor="middle" fill="#1e293b">Tailscale EKS Architecture - All 4 Use Cases</text>
+  
+  <!-- AWS VPC Container -->
+  <rect x="20" y="50" width="660" height="200" fill="#e0f2fe" stroke="#0369a1" stroke-width="2" rx="15" stroke-dasharray="5,5"/>
+  <text x="30" y="70" font-size="14" font-weight="bold" fill="#0369a1">AWS VPC</text>
+  
+  <!-- EKS Cluster -->
+  <rect x="40" y="90" width="150" height="60" fill="#c7d2fe" stroke="#6366f1" stroke-width="2" rx="8"/>
+  <text x="115" y="125" font-size="14" text-anchor="middle" fill="#1e293b">EKS Control Plane</text>
+  
+  <!-- Kubernetes Nodes -->
+  <rect x="220" y="90" width="150" height="60" fill="#a7f3d0" stroke="#059669" stroke-width="2" rx="8"/>
+  <text x="295" y="125" font-size="14" text-anchor="middle" fill="#064e3b">Kubernetes Nodes</text>
+  
+  <!-- Pod Network -->
+  <rect x="400" y="90" width="120" height="60" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="8"/>
+  <text x="460" y="115" font-size="12" text-anchor="middle" fill="#92400e">Pod Network</text>
+  <text x="460" y="135" font-size="11" text-anchor="middle" fill="#92400e">10.100.0.0/16</text>
+  
+  <!-- Service Network -->
+  <rect x="540" y="90" width="120" height="60" fill="#e0e7ff" stroke="#7c3aed" stroke-width="2" rx="8"/>
+  <text x="600" y="115" font-size="12" text-anchor="middle" fill="#5b21b6">Service Network</text>
+  <text x="600" y="135" font-size="11" text-anchor="middle" fill="#5b21b6">172.20.0.0/16</text>
+  
+  <!-- Tailscale Use Cases -->
+  <text x="350" y="290" font-size="16" font-weight="bold" text-anchor="middle" fill="#1e293b">Tailscale Use Cases</text>
+  
+  <!-- API Server Proxy -->
+  <rect x="40" y="310" width="140" height="50" fill="#fca5a5" stroke="#dc2626" stroke-width="2" rx="8"/>
+  <text x="110" y="330" font-size="12" text-anchor="middle" fill="#7f1d1d">🌐 API Server Proxy</text>
+  <text x="110" y="345" font-size="10" text-anchor="middle" fill="#7f1d1d">k8s-api-proxy</text>
+  
+  <!-- Cluster Egress -->
+  <rect x="200" y="310" width="140" height="50" fill="#a78bfa" stroke="#7c3aed" stroke-width="2" rx="8"/>
+  <text x="270" y="330" font-size="12" text-anchor="middle" fill="#5b21b6">📤 Cluster Egress</text>
+  <text x="270" y="345" font-size="10" text-anchor="middle" fill="#5b21b6">k8s-egress</text>
+  
+  <!-- Cluster Ingress -->
+  <rect x="360" y="310" width="140" height="50" fill="#86efac" stroke="#16a34a" stroke-width="2" rx="8"/>
+  <text x="430" y="330" font-size="12" text-anchor="middle" fill="#15803d">📥 Cluster Ingress</text>
+  <text x="430" y="345" font-size="10" text-anchor="middle" fill="#15803d">k8s-ingress</text>
+  
+  <!-- Subnet Router -->
+  <rect x="520" y="310" width="140" height="50" fill="#fbbf24" stroke="#f59e0b" stroke-width="2" rx="8"/>
+  <text x="590" y="330" font-size="12" text-anchor="middle" fill="#92400e">🔗 Subnet Router</text>
+  <text x="590" y="345" font-size="10" text-anchor="middle" fill="#92400e">k8s-subnet-router</text>
+  
+  <!-- Tailscale Network -->
+  <rect x="200" y="380" width="300" height="50" fill="#f1f5f9" stroke="#0ea5e9" stroke-width="2" rx="8"/>
+  <text x="350" y="400" font-size="14" text-anchor="middle" fill="#0369a1">Tailscale Network</text>
+  <text x="350" y="415" font-size="11" text-anchor="middle" fill="#0369a1">your-tailnet.ts.net</text>
+  
+  <!-- Connection Lines -->
+  <!-- EKS to Nodes -->
+  <line x1="190" y1="120" x2="220" y2="120" stroke="#6366f1" stroke-width="2"/>
+  
+  <!-- Nodes to Networks -->
+  <line x1="370" y1="120" x2="400" y2="120" stroke="#059669" stroke-width="2"/>
+  <line x1="520" y1="120" x2="540" y2="120" stroke="#059669" stroke-width="2"/>
+  
+  <!-- Use Cases to Tailscale Network -->
+  <line x1="110" y1="360" x2="250" y2="380" stroke="#dc2626" stroke-width="2"/>
+  <line x1="270" y1="360" x2="300" y2="380" stroke="#7c3aed" stroke-width="2"/>
+  <line x1="430" y1="360" x2="400" y2="380" stroke="#16a34a" stroke-width="2"/>
+  <line x1="590" y1="360" x2="450" y2="380" stroke="#f59e0b" stroke-width="2"/>
+  
+  <!-- Cluster to Use Cases -->
+  <line x1="115" y1="150" x2="110" y2="310" stroke="#6366f1" stroke-width="2" stroke-dasharray="3,3"/>
+  <line x1="295" y1="150" x2="270" y2="310" stroke="#059669" stroke-width="2" stroke-dasharray="3,3"/>
+  <line x1="295" y1="150" x2="430" y2="310" stroke="#059669" stroke-width="2" stroke-dasharray="3,3"/>
+  <line x1="460" y1="150" x2="590" y2="310" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,3"/>
+  
+  <!-- Arrow markers -->
   <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,5 L0,10 L2,5 z" fill="#6366f1" />
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 L2,3 z" fill="#374151" />
     </marker>
   </defs>
 </svg>
